@@ -1,0 +1,206 @@
+<html><head></head><body><div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a href="https://github.com/mainyaa/gulp-electron#readme">gulp-electron (v0.1.3)</a>
+</h1>
+<h4>A gulp plugin for Electron distribute applications.</h4>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.gulp-electron">module gulp-electron</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.gulp-electron.gulp-electron">
+            function <span class="apidocSignatureSpan"></span>gulp-electron
+            <span class="apidocSignatureSpan">(options)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.gulp-electron" id="apidoc.module.gulp-electron">module gulp-electron</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.gulp-electron.gulp-electron" id="apidoc.element.gulp-electron.gulp-electron">
+        function <span class="apidocSignatureSpan"></span>gulp-electron
+        <span class="apidocSignatureSpan">(options)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">gulp-electron = function (options) {
+  var bufferContents, endStream, packageJson;
+  PLUGIN_NAME = 'gulp-electron';
+  options = options || {};
+  if (!options.release || !options.version || !options.src || !options.cache) {
+    throw new PluginError(PLUGIN_NAME, 'Miss version or release path.');
+  }
+  if (path.resolve(options.src) === path.resolve(".")) {
+    throw new PluginError(PLUGIN_NAME, 'src path can not root path.');
+  }
+  packageJson = options.packageJson;
+  if (typeof options.packageJson === 'string') {
+    packageJson = require(packageJson);
+  }
+  if (options.platforms == null) {
+    options.platforms = ['darwin'];
+  }
+  if (options.apm == null) {
+    options.apm = getApmPath();
+  }
+  if (options.symbols == null) {
+    options.symbols = false;
+  }
+  if (options.rebuild == null) {
+    options.rebuild = false;
+  }
+  if (options.asar == null) {
+    options.asar = false;
+  }
+  if (options.asarUnpack == null) {
+    options.asarUnpack = false;
+  }
+  if (options.asarUnpackDir == null) {
+    options.asarUnpackDir = false;
+  }
+  if (options.packaging == null) {
+    options.packaging = true;
+  }
+  if (options.ext == null) {
+    options.ext = 'zip';
+  }
+  if (typeof options.platforms === 'string') {
+    options.platforms = [options.platforms];
+  }
+  bufferContents = function(file, enc, cb) {
+    var src;
+    src = file;
+    return cb();
+  };
+  endStream = function(callback) {
+    var platforms, push;
+    push = this.push;
+    platforms = ['darwin', 'win32', 'linux', 'darwin-x64', 'linux-ia32', 'linux-x64', 'win32-ia32', 'win32-x64', 'linux-arm'];
+    return Promise.map(options.platforms, function(platform) {
+      var _src, binName, cache, cacheFile, cachePath, cacheZip, cacheedPath, contentsPlistDir, defaultAppName, electronFile, electronFileDir
+, electronFilePath, getUserHome, identity, packagingCmd, pkg, pkgZip, pkgZipDir, pkgZipFilePath, pkgZipPath, platformDir, platformPath
+, ref, ref1, suffix, targetApp, targetAppDir, targetAppPath, targetAsarPath, targetDir, targetDirPath, targetZip, unpackagingCmd
+;
+      if (platform === 'osx') {
+        platform = 'darwin';
+      }
+      if (platform === 'win') {
+        platform = 'win32';
+      }
+      if (platforms.indexOf(platform) &lt; 0) {
+        throw new PluginError(PLUGIN_NAME, "Not support platform " + platform);
+      }
+      if (options.ext == null) {
+        options.ext = "zip";
+      }
+      pkgZip = pkg = packageJson.name + "-" + packageJson.version + "-" + platform;
+      if (options.symbols) {
+        pkgZip += '-symbols';
+      }
+      pkgZip += "." + options.ext;
+      cacheZip = cache = "electron-" + options.version + "-" + platform;
+      if (options.symbols) {
+        cacheZip += '-symbols';
+      }
+      cacheZip += "." + options.ext;
+      getUserHome = function() {
+        return process.env.HOME || process.env.USERPROFILE;
+      };
+      if (!path.isAbsolute(options.cache)) {
+        if (options.cache.match(/^\~/)) {
+          options.cache = path.join(getUserHome(), options.cache.replace(/^\~\//, ""));
+        } else {
+          options.cache = path.resolve(options.cache);
+        }
+      }
+      cachePath = path.resolve(options.cache, options.version);
+      cacheFile = path.resolve(cachePath, cacheZip);
+      cacheedPath = path.resolve(cachePath, cache);
+      if (!path.isAbsolute(options.release)) {
+        if (options.release.match(/^\~/)) {
+          options.release = path.join(getUserHome(), options.release.replace(/^\~\//, ""));
+        } else {
+          options.release = path.resolve(options.release);
+        }
+      }
+      pkgZipDir = path.resolve(options.release, options.version);
+      pkgZipPath = path.resolve(pkgZipDir);
+      pkgZipFilePath = path.resolve(pkgZipDir, pkgZip);
+      platformDir = path.join(pkgZipDir, platform);
+      platformPath = path.resolve(platformDir);
+      targetApp = "";
+      defaultAppName = "Electron";
+      suffix = "";
+      _src = path.join('resources', 'app');
+      if (platform.indexOf('darwin') &gt;= 0) {
+        suffix = ".app";
+        electronFile = "Electron" + suffix;
+        targetZip = packageJson.name + suffix; ...</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
+</body></html>
